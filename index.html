@@ -1,0 +1,1053 @@
+<html>
+  <head>
+    <title>Terrace Garden Demo</title>
+    <script src="/js/https.js"></script>
+    <script src="script.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://rawgit.com/fernandojsg/aframe-teleport-controls/master/dist/aframe-teleport-controls.min.js"></script>
+    <!-- <script src="script1.js"></script>-->
+    <script src="https://unpkg.com/aframe-event-set-component@4.0.1/dist/aframe-event-set-component.min.js"></script>
+
+    <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-video-shader/master/dist/aframe-vid-shader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+
+    <script src="https://unpkg.com/aframe-event-set-component/dist/aframe-event-set-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@5/dist/aframe-event-set-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-template-component@3.2.1/dist/aframe-template-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/alvinwan/aframe-low-poly@0.0.2/dist/aframe-low-poly.min.js"></script>
+
+    <!-- Link Button Trial -->
+    <script id="link" type="text/html">
+      <a-entity class="link"
+        geometry="primitive: plane; height: 1; width: 1"
+        material="shader: flat; src: ${thumb}"
+        event-set__mouseenter="scale: 1.2 1.2 1"
+        event-set__mouseleave="scale: 1 1 1"
+        event-set__click="_target: #image-360; _delay: 300; material.src: ${src}"
+        proxy-event="event: click; to: #image-360; as: fade"
+        sound="on: click; src: " "></a-entity>
+    </script>
+
+    <!-- Menu -->
+    <script>
+      AFRAME.registerComponent("set-sky", {
+        schema: { default: "" },
+        init() {
+          const sky = document.querySelector("a-sky");
+          this.el.addEventListener("click", () => {
+            sky.setAttribute("src", this.data);
+          });
+        },
+      });
+    </script>
+
+    <!-- Checkpoint-->
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-extras/v3.2.2/dist/aframe-extras.min.js"></script>
+
+    <!-- Teleport Script-->
+
+    <script>
+      AFRAME.registerComponent("touch-listener", {
+        init: function () {
+          var targetEl = this.el;
+
+          //Create the touchstart event
+          document
+            .querySelector("a-scene")
+            .addEventListener("touchstart", function () {
+              targetEl.emit("starttouch");
+            });
+
+          document
+            .querySelector("a-scene")
+            .addEventListener("mousedown", function () {
+              targetEl.emit("starttouch");
+            });
+
+          document.body.addEventListener("keydown", function (e) {
+            if (e.keyCode == 32) {
+              console.log("space key pressed!");
+              targetEl.emit("starttouch");
+            }
+          });
+
+          //Create the touchend event
+          document
+            .querySelector("a-scene")
+            .addEventListener("touchend", function () {
+              targetEl.emit("endtouch");
+            });
+
+          document
+            .querySelector("a-scene")
+            .addEventListener("mouseup", function () {
+              targetEl.emit("endtouch");
+            });
+
+          document.body.addEventListener("keyup", function (e) {
+            if (e.keyCode == 32) {
+              console.log("space key released!");
+              targetEl.emit("endtouch");
+            }
+          });
+        },
+      });
+    </script>
+  </head>
+  <body>
+    <a-scene
+      sound="src: #workit; on: click; loop: true; volume: 1; rolloffFactor: 0"
+      inspector="https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js"
+    >
+      <a-assets>
+        <!-- Image -->
+   
+
+        <!-- Images for Menu -->
+        <img
+          id="interact-thumb"
+          crossorigin="anonymous"
+          src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/Artboard%20%E2%80%93%201.png?v=1668863390591"
+        />
+        <img
+          id="fitness-thumb"
+          crossorigin="anonymous"
+          src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/fitness-select%20(1).png?v=1668863358921"
+        />
+        <img
+          id="meditate-thumb"
+          crossorigin="anonymous"
+          src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/meditate%20(1).png?v=1668863349966"
+        />
+
+        <!-- Sound -->
+        <audio
+          id="click-sound"
+          crossorigin="anonymous"
+          src="https://cdn.aframe.io/360-image-gallery-boilerplate/audio/click.ogg"
+        ></audio>
+
+        <audio
+          id="status1"
+          crossorigin="anonymous"
+          src="https://cdn.glitch.global/e0cb1d40-0202-4e28-858d-d1ef10218630/prayerplantstatus?v=1669009851530"
+        ></audio>
+
+        <audio
+          id="status2"
+          crossorigin="anonymous"
+          src="https://cdn.glitch.global/e0cb1d40-0202-4e28-858d-d1ef10218630/status2?v=1669048004419"
+        ></audio>
+
+        <!-- Video -->
+        <video
+          id="myvideo"
+          crossorigin="anonymous"
+          preload="auto"
+          autoplay="false"
+          loop="true"
+          webkit-playsinline
+          playsinline
+          controls
+          muted
+          src="https://cdn.glitch.me/e0cb1d40-0202-4e28-858d-d1ef10218630/SnapSave.io-Aloe%20vera%20Barfi%20__%20%E0%A4%97%E0%A5%8D%E0%A4%B5%E0%A4%BE%E0%A4%B0%E0%A4%AA%E0%A4%BE%E0%A4%A0%E0%A4%BE%20%E0%A4%AC%E0%A4%B0%E0%A5%8D%E0%A4%AB%E0%A5%80%20__%20With%203%20ingredients%20only.(360p).mp4"
+        ></video>
+        <video
+          id="data"
+          crossorigin="anonymous"
+          preload="auto"
+          autoplay="false"
+          loop="true"
+          webkit-playsinline
+          playsinline
+          controls
+          muted
+          src="https://cdn.glitch.global/5f42ea24-2adb-43fe-804b-3595273330e1/Data%20Encrypting.mp4"
+        ></video>
+        
+        <video
+          id="timer"
+          crossorigin="anonymous"
+          preload="auto"
+          autoplay="false"
+          loop="true"
+          webkit-playsinline
+          playsinline
+          controls
+          muted
+          src="https://cdn.glitch.me/5f42ea24-2adb-43fe-804b-3595273330e1/Pexels%20Videos%204551.mp4"
+        ></video>
+        
+         <video
+          id="gymwork"
+          crossorigin="anonymous"
+          preload="auto"
+          autoplay="false"
+          loop="true"
+          webkit-playsinline
+          playsinline
+          controls
+          muted
+          src="https://cdn.glitch.global/5f42ea24-2adb-43fe-804b-3595273330e1/pexels-tima-miroshnichenko-6390397.mp4"
+        ></video>
+        
+        
+         <video
+          id="data1"
+          crossorigin="anonymous"
+          preload="auto"
+          autoplay="false"
+          loop="true"
+          webkit-playsinline
+          playsinline
+          controls
+          muted
+          src="https://cdn.glitch.global/5f42ea24-2adb-43fe-804b-3595273330e1/Data%20Encrypting.mp4"
+        ></video>
+
+        <video
+          id="bbb"
+                  muted
+          src="http://mayognaise.github.io/aframe-video-shader/basic/bbb.mp4"
+        ></video>
+      </a-assets>
+
+      <!-- Image Link Buttons  -->
+      <a-entity
+        id="links"
+        layout="type: line; margin: 1.1"
+        position="0.705 4.091 -7.123"
+        rotation="0.000 -121.274 0.000"
+        scale="1.700 1.700 1.700"
+        geometry="box"
+        material="side: double; color: #BEA787; transparent: true; opacity: 0.5"
+      >
+        <a-entity
+          template="src: #link"
+          data-src="#art"
+          link="href: https://rs-vr-smartplant.glitch.me"
+          data-thumb="#interact-thumb"
+          ><a-plane height="1.1" width="1.1"></a-plane>
+        </a-entity>
+
+        <a-entity
+          template="src: #link"
+          data-src="#art"
+          link="href:https://rs-vr-workout.glitch.me"
+          data-thumb="#fitness-thumb"
+          ><a-plane height="1.1" width="1.1"></a-plane>
+        </a-entity>
+
+        <a-entity
+          template="src: #link"
+          data-src="#floor1"
+          link="href: https://rs-vr-meditate.glitch.me"
+          data-thumb="#meditate-thumb"
+        ></a-entity>
+      </a-entity>
+
+   <!--    <a-entity
+        layout="type: line; margin: 1.1"
+       position="0.748 4.091 -7.123"
+        rotation="0.000 -121.274 0.000"
+        scale="1.700 1.700 1.700"
+        material="side: double; color: #000000; transparent: true; opacity: 0"
+      >
+        <a-plane
+          template="src: #link"
+         height = "1.1"
+                 width="1.1"
+                 
+          >
+        </a-plane>
+          
+           <a-plane
+          template="src: #link"
+         height = "1.1"
+                 width="1.1"
+                 
+          >
+        </a-plane>
+
+
+       <a-plane
+          template="src: #link"
+         height = "1.1"
+                 width="1.1"
+                 
+          >
+        </a-plane>
+        
+      </a-entity>-->
+
+   
+     
+    
+      <!--img -->
+
+      <a-image
+        id="Modes"
+        position="-0.11356 6.87771 -5.40722"
+        src="https://cdn.glitch.global/e0cb1d40-0202-4e28-858d-d1ef10218630/modes%20(2).png?v=1669611148309"
+        scale="6.79 3.44 2.61"
+        material=""
+        geometry=""
+        rotation="0 -116.25485550542943 0"
+      ></a-image>
+
+      <!-- video-->
+
+     
+
+      <a-entity
+        id="video"
+        visible="false"
+        geometry="primitive: box"
+        position="21.970 5.600 2.685"
+        scale="1.5 1 0.3"
+        animation="property: rotation; to: 0 45 0; loop: NaN; dur: 10000"
+        material="shader: video; src: #myvideo"
+        rotation="0 45 0"
+      >
+      </a-entity>
+
+      <a-entity id="videodata" visible="" geometry="" position="23.04817 3.59812 -5.62056" scale="2 1 0.3" animation="property: rotation; to: 0 45 0; loop: NaN; dur: 10000" material="shader: video; src: #data" rotation="0 59.99999999999999 0">
+      </a-entity>
+      
+    <a-entity id="videodata2" visible="" geometry="" position="23.4519 6.64791 -17.73927" scale="2 1 0.3" material="shader: video; src: #bbb" rotation="">
+      </a-entity>
+      
+      <a-entity id="videodata-3" visible="" geometry="" position="20.95666 3.59812 -4.31584" scale="2 1 0.3" animation="property: rotation; to: 0 45 0; loop: NaN; dur: 10000" material="shader: video; src: #timer" rotation="0 45 0">
+      </a-entity>
+      
+     <a-entity id="videoworkout" visible="" geometry="" position="20.2934 3.51566 -10.088" scale="3 1 0.3" material="shader: video; src: #gymwork" rotation="0 168.12472469862286 0">
+      </a-entity>
+      
+
+      <!-- 360-degree image. -->
+      <a-sky
+        id="image-360"
+        radius="50"
+        rotate="0 0 0"
+        src="https://cdn.glitch.global/7c9efd6a-4175-4b58-bf8a-6e9711b17bc2/pixexid-86d6fd59-b3ab-40a9-9d93-6776ff6de59c.jpeg?v=1651811132601"
+      ></a-sky>
+
+      <!-- <a-sky color="#a3d0ed"></a-sky>-->
+
+      <!-- Models -->
+      <!-- Model with rotation animation-->
+      <!--    <a-gltf-model id="well" 
+              position="-4.845 0.112 -2.237" 
+              rotation="0 15 0" scale=".005 .005 .005" 
+              src="https://cdn.glitch.global/7c9efd6a-4175-4b58-bf8a-6e9711b17bc2/Well.glb?v=1651809970921" 
+              animation="property: rotation; to: 0 360 0; loop: true; dur: 10000"></a-gltf-model>
+      
+     
+ <!-- Model -->
+
+      <!--  <a-gltf-model id="Room" position="-0.06151 0.01185 2.40926" rotation="" scale="0.05 0.05 0.05" src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/attic_and_terrace_3d_model.glb?v=1665485034983" gltf-model="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/attic_and_terrace_3d_model.glb?v=1665485034983"></a-gltf-model>-->
+      <a-gltf-model
+        id="Room"
+        position="42.80102 2.43375 17.40632"
+        rotation="0 -161.81 0"
+        scale="4 4 4"
+        src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/attic_and_terrace_3d_model.glb?v=1665485034983"
+        gltf-model="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/attic_and_terrace_3d_model.glb?v=1665485034983"
+      ></a-gltf-model>
+
+      <a-gltf-model
+        id="grass"
+        position="22.63977 2.17244 -5.7962"
+        rotation="0 3.686410453871716 0"
+        scale="0.79746 0.400 1.6021"
+        src="https://cdn.glitch.global/7daeb157-b470-4694-bb33-aef239ae7401/Crops.glb?v=1651895155184"
+        gltf-model="https://cdn.glitch.global/7daeb157-b470-4694-bb33-aef239ae7401/Crops.glb?v=1651895155184"
+      >
+      </a-gltf-model>
+
+      <a-gltf-model
+        id="table"
+        position="24.13864 2.17244 3.34253"
+        rotation="0 3.686410453871716 0"
+        scale="3.16981 6.28542 4.04709"
+        src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/table.glb?v=1668868497681"
+        gltf-model="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/table.glb?v=1668868497681"
+      >
+      </a-gltf-model>
+
+      <a-gltf-model
+        id="smartplant"
+        position="24.66591 4.53237 3.53234"
+        rotation="0.8382372542763944 145.411 0.02692901637114869"
+        scale="0.7 0.7 0.7"
+        src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/smartplant.glb?v=1668875342326"
+        gltf-model="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/smartplant.glb?v=1668875342326"
+        sound__mouseenter="src: #click-sound; on: mouseenter; poolSize: 2"
+        event-set__mouseenter="visible: true; _target: #aloeplantmenu;"
+      >
+      </a-gltf-model>
+
+      <a-gltf-model
+        id="smartplant2"
+        position="30.06519 3.31824 -7.66153"
+        rotation="0.8382372542763944 -163.273 0.02692901637114869"
+        scale="0.7 0.7 0.7"
+        src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/smartplant.glb?v=1668875342326"
+        gltf-model="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/smartplant.glb?v=1668875342326"
+        sound__mouseenter="src: #click-sound; on: mouseenter; poolSize: 2"
+        event-set__mouseenter="visible: true; _target: #pplantmenu;"
+      >
+      </a-gltf-model>
+
+      <a-gltf-model
+        id="plant1"
+        position="30.06519 3.27146 -10.84053"
+        rotation="0.8382372542763944 177.14078856280148 0.02692901637114869"
+        scale="2 2 2"
+        src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/pothos_potted_plant_-_money_plant.glb?v=1668882151583"
+        gltf-model="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/pothos_potted_plant_-_money_plant.glb?v=1668882151583"
+      >
+      </a-gltf-model>
+
+      <a-gltf-model
+        id="plant2"
+        position="29.82216 3.38322 -13.42996"
+        rotation="0.8382372542763944 177.14078856280148 0.02692901637114869"
+        scale="2.6 2.6 2.6"
+        src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/stylized_pot_plant.glb?v=1668885573400"
+        gltf-model="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/stylized_pot_plant.glb?v=1668885573400"
+      >
+      </a-gltf-model>
+
+      <a-gltf-model
+        id="plant3"
+        position="28.87978 3.38322 -16.41655"
+        rotation="0.8382372542763944 177.14078856280148 0.02692901637114869"
+        scale="3 1.5 3"
+        src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/tall_potted_house_plant.glb?v=1668885976421"
+        gltf-model="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/tall_potted_house_plant.glb?v=1668885976421"
+      >
+      </a-gltf-model>
+
+      <a-gltf-model
+        id="aloe"
+        position="24.55031 5.83359 3.38672"
+        rotation="0.8382372542763944 145.411 0.02692901637114869"
+        scale="0.02 0.03 0.025"
+        src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/aloe_vera.glb?v=1668879319109"
+        gltf-model="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/aloe_vera.glb?v=1668879319109"
+      >
+      </a-gltf-model>
+
+      <a-gltf-model
+        id="leaves"
+        position="32.10559 4.53008 -7.21741"
+        rotation="0.8382372542763944 145.411 0.02692901637114869"
+        scale="0.002 0.002 0.002"
+        src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/prayer_plant.glb?v=1668881398531"
+        gltf-model="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/prayer_plant.glb?v=1668881398531"
+      >
+      </a-gltf-model>
+
+      <a-gltf-model
+        id="treadmill"
+        position="22.79247 2.15733 -17.58999"
+        rotation="0 -175.58921885358723 0"
+        scale="5 5 5"
+        src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/treadmill.glb?v=1668879905366"
+        gltf-model="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/treadmill.glb?v=1668879905366"
+      >
+      </a-gltf-model>
+
+      <a-gltf-model
+        id="mat"
+        position="26.3442 2.15733 -16.96965"
+        rotation="0 -175.58921885358723 0"
+        scale="0.012 0.01 0.01"
+        src="https://cdn.glitch.global/5f42ea24-2adb-43fe-804b-3595273330e1/plate_mat.glb?v=1669052680174"
+        gltf-model="https://cdn.glitch.global/5f42ea24-2adb-43fe-804b-3595273330e1/plate_mat.glb?v=1669052680174"
+      >
+      </a-gltf-model>
+
+      <a-gltf-model
+        id="pushups"
+        position="21.5955 2.80535 -8.09688"
+        rotation="0 -90 0"
+        scale="20 20 20"
+        src="https://cdn.glitch.global/5f42ea24-2adb-43fe-804b-3595273330e1/gam_push_up.glb?v=1669053980660"
+        animation-mixer=""
+        gltf-model="https://cdn.glitch.global/5f42ea24-2adb-43fe-804b-3595273330e1/gam_push_up.glb?v=1669053980660"
+      ></a-gltf-model>
+     <a-gltf-model id="run" position="24.47484 2.9584 -17.06823" rotation="0 180 0" scale="1.3 1.3 1.3" src="https://cdn.glitch.global/5f42ea24-2adb-43fe-804b-3595273330e1/jogging.glb?v=1669090218712" animation-mixer="" gltf-model="https://cdn.glitch.global/5f42ea24-2adb-43fe-804b-3595273330e1/jogging.glb?v=1669090218712"></a-gltf-model>
+
+      <!--Shape-->
+      <!-- <a-box position="15.93052 4.95485 15.80044" rotation="0 90 0" scale="0.42 12 0.45" color="#552b00" material="" geometry=""></a-box>
+<a-box position="8.52053 4.95485 -8.33339" rotation="0 90 0" scale="0.42 12 0.45" color="#552b00" material="" geometry=""></a-box>
+<a-box position="-9.50756 4.95485 -8.57853" rotation="0 90 0" scale="0.42 12 0.45" color="#552b00" material="" geometry=""></a-box>
+<a-box position="-7.00806 4.95485 15.53846" rotation="0 90 0" scale="0.42 12 0.45" color="#552b00" material="" geometry=""></a-box>
+           
+      
+      
+      <!-- Lights -->
+      <!-- <a-light type="directional" castshadow="true" intensity="0.4" color="#D0EAF9;" position="5 3 1"></a-light>
+      <a-light intensity="0.8" type="ambient" color="#B4C5ECs"></a-light>
+      
+<!-- sound -->
+      <a-assets>
+        <audio
+          id="workit"
+          src="https://cdn.glitch.global/5f42ea24-2adb-43fe-804b-3595273330e1/music_zapsplat_street_jam.mp3?v=1669090863342"
+        ></audio>
+
+        <!-- mixins -->
+
+        <a-mixin
+          id="collider"
+          class="collider"
+          opacity="0.99"
+          event-set__mousedown="material.opacity: 1.0"
+          event-set__mouseenter="material.opacity: 0.9"
+          event-set__mouseleave="material.opacity: 0.99"
+          event-set__mouseup="material.opacity: 0.99"
+        ></a-mixin>
+      </a-assets>
+
+      <!-- Light Card -->
+
+      <!--<a-box
+        position="17.25 3.979 -12.81869"
+        rotation=""
+        color="#4CC3D9"
+        material="color: #54d94a"
+        geometry=""
+        scale="0.2 2.50898 5.2421"
+        event-set__mouseenter="visible: true; _target: #chlight"
+      ></a-box>-->
+
+      <a-image
+        id="lightcardon"
+        position="15.06994 3.99554 -16.38966"
+        src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/Lightbtn_on.png?v=1668852308369"
+        scale="3.65 2.37 0.28"
+        material=""
+        sound__mouseenter="src: #click-sound; on: mouseenter; poolSize: 2"
+        event-set__mouseenter="visible: true; _target: #chlight;"
+        event-set__mouseleave="visible: true; _target: #splight3"
+        rotation="0 -68.0284249314729 0"
+        geometry=""
+      ></a-image>
+
+      <a-image
+        id="lightcardoff"
+        position="15.06994 6.03956 -16.38966"
+        src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/Lightbtn_off.png?v=1668853422229"
+        scale="3.65 2.37 0.28"
+        material=""
+        sound__mouseenter="src: #click-sound; on: mouseenter; poolSize: 2"
+        event-set__mouseenter="visible: false; _target: #chlight"
+        event-set__mouseleave="visible: false; _target: #splight3"
+        rotation="0 -68.0284249314729 0"
+        geometry=""
+        visible=""
+      ></a-image>
+
+      <a-light id="alight" type="ambient" color="#b19cd9"></a-light>
+
+      <a-light
+        id="chlight"
+        position="31.66 7.685 35.197"
+        type="spot"
+        color="#FFF"
+        angle="25"
+        target="#slight"
+        intensity="1.260"
+        castshadow="true"
+        visible="false"
+      ></a-light>
+
+      <a-light
+        id="splight"
+        position="19.521 11.824 2.863"
+        type="spot"
+        color="#FFF"
+        angle="25"
+        target="#splant"
+        intensity="1.260"
+        castshadow="true"
+        visible=""
+        light="angle: 13.6; intensity: 2.09"
+        scale="1.89 1.134 1.925"
+        rotation="-57.347 -96.131 152.243"
+      ></a-light>
+      <a-light
+        id="splight2"
+        position="19.521 11.824 2.863"
+        type="spot"
+        color="#FFF"
+        angle="25"
+        target="#splant2"
+        intensity="0.060"
+        castshadow="true"
+        visible=""
+        light="angle: 13.6; intensity: 7.09"
+        scale="1.89 1.134 1.925"
+        rotation="-57.347 -96.131 152.243"
+      ></a-light>
+      <!--<a-light
+        id="splight3"
+        position="23.69819 11.65355 -7.64209"
+        type="spot"
+        color="#FFF"
+        angle="25"
+        target="#splant3"
+        intensity="0.060"
+        castshadow="true"
+        visible=""
+        light="angle: 13.6; intensity: 2.09"
+        scale="1.89 1.134 1.925"
+        rotation="-57.347 -96.131 152.243"
+      ></a-light>-->
+      <a-light
+        id="splight3"
+        position="23.69819 13.10141 -11.86665"
+        type="spot"
+        target="#slight1"
+        color="#FFF"
+        angle="25"
+        intensity="2.060"
+        castshadow="true"
+        visible="false"
+        light="angle: 36.74; intensity: 1.82"
+        scale="1.89 1.134 1.925"
+        rotation="-56.2134622380802 -106.96950147753931 150.00608034320084"
+      ></a-light>
+      <!-- shapes with sound -->
+      <!--
+  <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow mixin="collider" class="collider" sound="src: ##click-sound; on: click; poolSize: 3" sound__mouseenter="src: #click-sound; on: mouseenter; poolSize: 2"></a-sphere>-->
+
+      <!-- <a-box id="mlight" position="-0.361 1.371 0.613" rotation="0 45 0" width="0.5" height="0.5" depth="0.5" color="#4CC3D9" shadow mixin="collider" class="collider" sound="src: #click-sound; on: click; poolSize: 3" sound__mouseenter="src: #click-sound; on: mouseenter; poolSize: 2" 
+         event-set__1="_event: click; material.color:#ff0000;"
+            event-set__2="_event: mouseenter; material.color: #0000ff;_target: #splight3"
+            event-set__3="_event: mouseleave; material.color: #FCB241;_target: #splight3"
+          animation__rotate="property: rotation; dir: forward; dur: 10000;
+                                 easing: easeInSine; loop: false; to: 0 360 0;
+                                 startEvents:click"></a-box>
+
+ <!-- <a-cylinder id="cyl" position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" shadow mixin="collider" class="collider" sound="src: #click-sound; on: click; poolSize: 3" sound__mouseenter="src: #click-sound; on: mouseenter; poolSize: 2"></a-cylinder>
+-->
+
+      <!-- recipe card -->
+
+      <a-image
+        id="norecipe"
+        position="29.09237 7.61763 -6.42427"
+        visible="false"
+        src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/norecipe.png?v=1668935893583"
+        scale="2.196 1.249 0.177"
+        material=""
+        rotation="0 -95 0"
+        geometry=""
+      ></a-image>
+
+      <a-entity id="lightbox" visible="false">
+        <a-box
+          id="mlight"
+          position="28.060 6.842 -10.159"
+          rotation="0 0 0"
+          width="0.5"
+          height="1"
+          depth="0.5"
+          color="#0000ff"
+          shadow
+          mixin="collider"
+          class="collider"
+          sound="src: #click-sound; on: click; poolSize: 3"
+          sound__mouseenter="src: #click-sound; on: mouseenter; poolSize: 2"
+          event-set__1="_event: click; material.color:#0000ff;"
+          event-set__2="_event: mouseenter; color: #0000ff;_target: #splight3"
+          animation__rotate="property: rotation; dir: forward; dur: 10000;
+                                 easing: easeInSine; loop: false; to: 0 360 0;
+                                 startEvents:click"
+        ></a-box>
+        <a-box
+          id="mlight2"
+          position="28.060 6.842 -11.006"
+          rotation="0 0 0"
+          width="0.5"
+          height="1"
+          depth="0.5"
+          color="	#8B8000"
+          shadow
+          mixin="collider"
+          class="collider"
+          sound="src: #click-sound; on: click; poolSize: 3"
+          sound__mouseenter="src: #click-sound; on: mouseenter; poolSize: 2"
+          event-set__1="_event: click; material.color:	#8B8000;"
+          event-set__2="_event: mouseenter; color:	#8B8000;_target: #splight3"
+          animation__rotate="property: rotation; dir: forward; dur: 10000;
+                                 easing: easeInSine; loop: false; to: 0 360 0;
+                                 startEvents:click"
+        ></a-box>
+        <a-box
+          id="mlight3"
+          position="28.060 6.842 -11.763"
+          rotation="0 0 0"
+          width="0.5"
+          height="1"
+          depth="0.5"
+          color="#00FF00"
+          shadow
+          mixin="collider"
+          class="collider"
+          sound="src: #click-sound; on: click; poolSize: 3"
+          sound__mouseenter="src: #click-sound; on: mouseenter; poolSize: 2"
+          event-set__1="_event: click; material.color:#00FF00;"
+          event-set__2="_event: mouseenter; color: #00FF00;_target: #splight3"
+          animation__rotate="property: rotation; dir: forward; dur: 10000;
+                                 easing: easeInSine; loop: false; to: 0 360 0;
+                                 startEvents:click"
+        ></a-box>
+      </a-entity>
+
+      <a-entity id="alightbox" visible="false">
+        <a-box
+          id="aamlight"
+          position="23.415 7.405 -0.227"
+          rotation="0 45 0"
+          width="0.5"
+          height="1"
+          depth="0.5"
+          color="#0000ff"
+          shadow
+          mixin="collider"
+          class="collider"
+          sound="src: #click-sound; on: click; poolSize: 3"
+          sound__mouseenter="src: #click-sound; on: mouseenter; poolSize: 2"
+          event-set__1="_event: click; material.color:#0000ff;"
+          event-set__2="_event: mouseenter; color: #0000ff;_target: #splight2"
+          animation__rotate="property: rotation; dir: forward; dur: 10000;
+                                 easing: easeInSine; loop: false; to: 0 360 0;
+                                 startEvents:click"
+        ></a-box>
+        <a-box
+          id="aamlight2"
+          position="23.975 7.408 -0.781"
+          rotation="0 45 0"
+          width="0.5"
+          height="1"
+          depth="0.5"
+          color="	#8B8000"
+          shadow
+          mixin="collider"
+          class="collider"
+          sound="src: #click-sound; on: click; poolSize: 3"
+          sound__mouseenter="src: #click-sound; on: mouseenter; poolSize: 2"
+          event-set__1="_event: click; material.color:	#8B8000;"
+          event-set__2="_event: mouseenter; color:	#8B8000;_target:#splight2"
+          animation__rotate="property: rotation; dir: forward; dur: 10000;
+                                 easing: easeInSine; loop: false; to: 0 360 0;
+                                 startEvents:click"
+        ></a-box>
+        <a-box
+          id="aamlight3"
+          position="24.566 7.412 -1.286"
+          rotation="0 45 0"
+          width="0.5"
+          height="1"
+          depth="0.5"
+          color="#00FF00"
+          shadow
+          mixin="collider"
+          class="collider"
+          sound="src: #click-sound; on: click; poolSize: 3"
+          sound__mouseenter="src: #click-sound; on: mouseenter; poolSize: 2"
+          event-set__1="_event: click; material.color:#00FF00;"
+          event-set__2="_event: mouseenter; color: #00FF00;_target: #splight2"
+          animation__rotate="property: rotation; dir: forward; dur: 10000;
+                                 easing: easeInSine; loop: false; to: 0 360 0;
+                                 startEvents:click"
+        ></a-box>
+      </a-entity>
+
+      <!-- themes -->
+      <!-- <a-entity
+        id="themeballs"
+        visible="false"
+        material="side: double; color: #BEA787;"
+      >
+        <a-entity>
+          <a-sphere 
+                   id="ball1"
+            color="#F44336"
+            radius="0.5"     
+            position="27.4142 3.62788 -9.77056"
+            set-sky="https://cdn.glitch.me/1f5d4296-d856-4c02-89c9-c11c8fffc5d0%2Fhill.jpg?v=1638532103461"
+            material=""
+            geometry=""
+          ></a-sphere
+        ></a-entity>
+        <a-entity>
+          <a-sphere
+            color="#00008B"
+                           id="ball2"
+            radius="0.5"
+          
+            position="27.4142 3.62788 -10.94003"
+            set-sky="https://c3.staticflickr.com/2/1475/26239222850_cabde81c39_k.jpg"
+            material=""
+            geometry=""
+          ></a-sphere
+        ></a-entity>
+      </a-entity>-->
+
+      <!-- Menu for Prayer Plant -->
+      <a-entity
+        id="pplantmenu"
+        visible="false"
+        material="side: double; color: #BEA787;"
+      >
+        <a-entity>
+          <a-image
+            id="recipe"
+            position="29.11991 6.28132 -6.46352"
+            src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/Recipe.png?v=1668935566546"
+            scale="2.1964 1.2487 0.1771"
+            material=""
+            event-set__mouseenter="visible: true; _target: #norecipe"
+            event-set__mouseleave="visible: false; _target: #norecipe"
+            rotation="0.010313240312354819 -95 -0.010313240312354819"
+            geometry=""
+          ></a-image>
+        </a-entity>
+        <a-entity>
+          <a-image
+            id="themes"
+            position="29.11991 5.21107 -9.22421"
+            src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/Themes.png?v=1668935556508"
+            scale="2.3364 1.3787 0.4971"
+            material=""
+            event-set__mouseenter="visible: true; _target: #themeballs"
+            rotation="0.010313240312354819 -65.73773966653988 -0.010313240312354819"
+            geometry=""
+          ></a-image>
+        </a-entity>
+        <a-entity id="themeballs" visible="false">
+          <a-sphere
+            id="ball1"
+            color="#F44336"
+            radius="0.5"
+            position="27.4142 3.62788 -9.77056"
+            set-sky="https://live.staticflickr.com/65535/52100880753_9a3df8ecc1_k.jpg"
+            material=""
+            geometry=""
+          ></a-sphere>
+
+          <a-entity
+            id="ball1txt"
+            text="value: Water; width: 5"
+            hide-on-enter-ar=""
+            position="26.82561 3.81471 -7.46763"
+            rotation="0 -90 0"
+            visible=""
+          ></a-entity>
+          <a-sphere
+            color="#00008B"
+            id="ball2"
+            radius="0.5"
+            position="27.4142 3.62788 -10.94003"
+            set-sky="https://cdn.glitch.global/6fca1f06-edd6-42e0-9a1d-2221b287b559/uki0lwy-360-panorama-view-park.jpeg?v=1669112047567"
+            material=""
+            geometry=""
+          ></a-sphere>
+          <a-entity
+            id="ball2txt"
+            text="value: Forest; width: 5"
+            hide-on-enter-ar=""
+            position="26.82561 3.81471 -8.60179"
+            rotation="0 -90 0"
+            visible=""
+          ></a-entity>
+        </a-entity>
+        <a-entity>
+          <a-image
+            id="mood"
+            position="29.11991 7.31736 -9.41301"
+            src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/mood.png?v=1668935540486"
+            scale="2.1964 1.2487 0.1771"
+            material=""
+            event-set__mouseenter="visible: true; _target: #lightbox"
+            rotation="0.010313240312354819 -65.738 -0.010313240312354819"
+            geometry=""
+          ></a-image>
+        </a-entity>
+
+        <a-entity>
+          <a-image
+            id="status"
+            position="29.120 8.331 -6.464"
+            src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/status%20(1).png?v=1669008134630"
+            scale="2.1964 1.2487 0.1771"
+            material=""
+            mixin="collider"
+            class="collider"
+            sound="src: #click-sound; on: click; poolSize: 3"
+            sound__mouseenter="src: #status1; on: mouseenter;volume: 10; poolSize: 2"
+            rotation="0.010313240312354819 -95 -0.010313240312354819"
+            geometry=""
+          ></a-image>
+        </a-entity>
+      </a-entity>
+
+      <!-- Menu for AloeVera -->
+      <a-entity
+        id="aloeplantmenu"
+        visible="false"
+        material="side: double; color: #BEA787;"
+      >
+        <a-entity>
+          <a-image
+            id="arecipe"
+            position="22.001 7.038 2.764"
+            src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/Recipe.png?v=1668935566546"
+            scale="2.1964 1.2487 0.1771"
+            material=""
+            event-set__mouseenter=" visible: true; _target: #video"
+            rotation="0.010 -132.094 -0.010"
+            geometry=""
+          ></a-image>
+        </a-entity>
+        <a-entity>
+          <a-image
+            id="athemes"
+            position="23.916 6.142 1.484"
+            src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/Themes.png?v=1668935556508"
+            scale="2.3364 1.3787 0.4971"
+            material=""
+            event-set__mouseenter="visible: true; _target: #aathemeballs"
+            rotation="0.010 -119.047 -0.010"
+            geometry=""
+          ></a-image>
+        </a-entity>
+        <a-entity id="aathemeballs" visible="false">
+          <a-sphere
+            id="aaball1"
+            color="#F44336"
+            radius="0.5"
+            position="23.906 5.154 0.880"
+            set-sky="https://live.staticflickr.com/65535/52100880753_9a3df8ecc1_k.jpg"
+            material=""
+            geometry=""
+          ></a-sphere>
+
+          <a-entity
+            id="aaball1txt"
+            text="value: Water; width: 5"
+            hide-on-enter-ar=""
+            position="23.346 5.190 2.935"
+            rotation="0 -91.030 0"
+            visible=""
+          ></a-entity>
+          <a-sphere
+            color="#00008B"
+            id="aaball2"
+            radius="0.5"
+            position="23.906 5.154 -0.187"
+            set-sky="https://cdn.glitch.global/6fca1f06-edd6-42e0-9a1d-2221b287b559/uki0lwy-360-panorama-view-park.jpeg?v=1669112047567"
+            material=""
+            geometry=""
+          ></a-sphere>
+          <a-entity
+            id="aaball2txt"
+            text="value: Forest; width: 5"
+            hide-on-enter-ar=""
+            position="23.346 5.190 1.918"
+            rotation="0 -90 0"
+            visible=""
+          ></a-entity>
+        </a-entity>
+
+        <a-entity>
+          <a-image
+            id="amood"
+            position="23.916 7.863 1.161"
+            src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/mood.png?v=1668935540486"
+            scale="2.1964 1.2487 0.1771"
+            material=""
+            event-set__mouseenter="visible: true; _target: #alightbox"
+            rotation="0.010 -119.047 -0.010"
+            geometry=""
+          ></a-image>
+        </a-entity>
+        <a-entity>
+          <a-image
+            id="astatus"
+            position="22.001 8.592 2.764"
+            src="https://cdn.glitch.global/2167438b-8dfe-4335-afca-f785bee7c0e2/status%20(1).png?v=1669008134630"
+            scale="2.1964 1.2487 0.1771"
+            material=""
+            mixin="collider"
+            class="collider"
+            sound="src: #click-sound; on: click; poolSize: 3"
+            sound__mouseenter="src: #status2; on: mouseenter;volume: 10; poolSize: 2"
+            rotation="0.010 -128.616 -0.010"
+            geometry=""
+          ></a-image>
+        </a-entity>
+      </a-entity>
+
+      <!-- Teleport Camera-->
+      <a-entity position="0 0 0" rotation="0 -90 0" id="pov">
+        <a-camera
+          position="-10.064 4.570 10.623"
+          rotation="0 -90 0"
+          universal-controls="movementControls: checkpoint"
+          checkpoint-controls="mode: animate"
+          wasd-controls
+          look-controls="pointerLockEnabled:true"
+        >
+          <a-entity
+            position="0.1 -0.1 0"
+            touch-listener
+            teleport-controls="cameraRig: #cameraRig;
+             teleportOrigin: #head;
+             startEvents:starttouch;
+             endEvents:endtouch;
+             curveShootingSpeed:5;
+             hitCylinderRadius:0.8;
+             collisionEntities: [ground]"
+          >
+          </a-entity>
+          <a-entity
+            cursor
+            position="0 0 -1"
+            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03;"
+            material="color: #0000FF; shader: flat;"
+          ></a-entity>
+          <!--  <a-cursor position="0 -0.05 -1" color="#4CC3D9" fuse="true" timeout="10"></a-cursor>-->
+        </a-camera>
+      </a-entity>
+
+      <!-- <a-entity id="camera" camera="active: true" look-controls zoom-controls="min:5; max: 140" fov="100" position="0 0 0"></a-entity>  -->
+      <!--   <a-entity id="head" position="0 0 0" camera="userHeight:1.6" wasd-controls look-controls="pointerLockEnabled:true">
+        <a-entity position="0.1 -0.1 0"
+          touch-listener
+          teleport-controls=
+            "cameraRig: #cameraRig;
+             teleportOrigin: #head;
+             startEvents:starttouch;
+             endEvents:endtouch;
+             curveShootingSpeed:5;
+             hitCylinderRadius:0.5;
+             collisionEntities: [ground]"
+          >
+        </a-entity>
+      </a-entity>-->
+    </a-scene>
+  </body>
+</html>
